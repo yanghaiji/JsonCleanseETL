@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    include: datatransformer.yaml
+json:
+  mapping:
+    paths:
+      person: "$.name"
+      age: "$.age"
+      city: "$.address.city"
+      zip: "$.address.zip"
+
+
+
