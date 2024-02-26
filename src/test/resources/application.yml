@@ -4,11 +4,26 @@ spring:
 
 json:
   mapping:
-    paths:
-      name: "$.name"
-      age: "$.age"
-      city: "$.address.city"
-      zip: "$.address.zip"
+    transforms:
+      - type: "type1"
+        title: "Type 1 Title"
+        mappings:
+          - targetName: personName
+            path: "$.name"
+            describe: describe
+            operation: describe
+            sourceName: name
+          - targetName: personAge
+            path: "$.age"
+            describe: describe
+            operation: describe
+            sourceName: age
+          - targetName: personAddress
+            path: "$.wwww"
+            describe: describe
+            operation: describe
+            sourceName: address
+
 
 
 

@@ -32,12 +32,11 @@ public interface DataTransformer {
      * </p>
      *
      * @param data   元数据
-     * @param tClass 目标数据结构体，
      * @return T
      * @version 1.0.0
      * @author hai ji
      * @since 2024/2/22
      */
-    <T> T transform(JSONObject data, Class<T> tClass);
+    <T> T transform(JSONObject data);
 
 }

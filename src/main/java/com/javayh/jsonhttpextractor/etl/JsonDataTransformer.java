@@ -54,7 +54,8 @@ public class JsonDataTransformer implements DataTransformer {
      * @since 2024/2/22
      */
     @Override
-    public <T> T transform(JSONObject data, Class<T> tClass) {
-        return reflectiveMapper.map(data, tClass);
+    public <T> T transform(JSONObject data) {
+//        return (T) reflectiveMapper.map(data);
+        return null;
     }
 }
