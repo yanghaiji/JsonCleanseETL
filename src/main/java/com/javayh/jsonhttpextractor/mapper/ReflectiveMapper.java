@@ -1,13 +1,15 @@
 package com.javayh.jsonhttpextractor.mapper;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.javayh.jsonhttpextractor.config.DataTransformerProperties;
+import com.javayh.jsonhttpextractor.config.JsonMappingProperties;
+import com.javayh.jsonhttpextractor.exception.JsonConfigException;
 import com.jayway.jsonpath.JsonPath;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,44 +33,53 @@ public class ReflectiveMapper {
         this.jsonPathConfig = jsonPathConfig;
     }
 
-    public <T> T map(JSONObject jsonObject, Class<T> targetType) {
-        if (targetType.isAssignableFrom(HashMap.class) || targetType.isAssignableFrom(JSONObject.class)) {
-            return map(jsonObject);
+    public <T> JSONObject transformer(JSONObject entity, String type) {
+        Optional<DataTransformerProperties.TransformConfig> first = jsonPathConfig.getTransforms().stream()
+            .filter(transformConfig -> transformConfig.getType().equals(type)).findFirst();
+        if (first.isPresent()) {
+            DataTransformerProperties.TransformConfig transformConfig = first.get();
+            return mapObject(entity, transformConfig.getMappings());
         }
-        return mapToObject(jsonObject, targetType);
+        throw new JsonConfigException(type + "mapping configuration missing; please check your " +
+            "dataTransformerProperties configuration.");
     }
 
-    private <T> T map(JSONObject jsonObject) {
-        Map<String, Object> obj = new HashMap<>();
-        for (Map.Entry<String, String> entry : jsonPathConfig.getPaths().entrySet()) {
-            String fieldName = entry.getKey();
-            String jsonPath = entry.getValue();
-            Object fieldValue = readFieldValue(jsonObject, jsonPath);
-            obj.put(fieldName, fieldValue);
+    /**
+     * <p>
+     *
+     * </p>
+     *
+     * @param entity       源数据
+     * @param jsonMappings 具体转换的配置规则，参考{@link JsonMappingProperties}
+     * @return com.alibaba.fastjson.JSONObject
+     * @version 1.0.0
+     * @author hai ji
+     * @since 2024/2/26
+     */
+    private JSONObject mapObject(JSONObject entity, List<JsonMappingProperties> jsonMappings) {
+        JSONObject jsonObject = new JSONObject();
+        if (CollectionUtils.isEmpty(jsonMappings)) {
+            return jsonObject;
         }
-        return (T) obj;
-    }
-
-    private <T> T mapToObject(JSONObject jsonObject, Class<T> targetType) {
-        T obj = null;
-        try {
-            obj = targetType.getDeclaredConstructor().newInstance();
-            for (Field field : targetType.getDeclaredFields()) {
-                String fieldName = field.getName();
-                Object fieldValue = jsonObject.get(fieldName);
-                if (fieldValue != null) {
-                    field.setAccessible(true);
-                    field.set(obj, fieldValue);
+        jsonMappings.forEach(jsonMapping -> {
+            String jsonPath = jsonMapping.getPath();
+            String sourceName = jsonMapping.getSourceName();
+            Object fieldValue = readFieldValue(entity, jsonPath);
+            if (fieldValue != null) {
+                if (fieldValue instanceof JSONObject) {
+                    jsonObject.putAll((JSONObject) fieldValue);
+                } else {
+                    jsonObject.put(sourceName, fieldValue);
                 }
             }
-        } catch (Exception e) {
-            log.error("数据转换异常{}", e.getMessage(), e);
-        }
-        return obj;
+
+        });
+        return jsonObject;
     }
 
     private Object readFieldValue(JSONObject jsonObject, String jsonPath) {
         Object fieldValue = JsonPath.read(jsonObject, jsonPath);
         return Objects.isNull(fieldValue) ? "" : fieldValue;
     }
+
 }

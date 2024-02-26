@@ -16,10 +16,23 @@ public class ReflectiveMapperTest {
     @Autowired
     private ReflectiveMapper reflectiveMapper;
 
+    /**
+     * 简单的数据节点的移动
+     * @throws Exception
+     */
     @Test
     public void testMappingToMap() throws Exception {
-        String jsonString = "{\"name\":\"John\",\"age\":30,\"address\":{\"city\":\"New York\",\"zip\":\"10001\"}}";
-        Map<String, Object> map = reflectiveMapper.map(JSONObject.parseObject(jsonString), HashMap.class);
+        String jsonString = "{\n" +
+            "    \"name\": \"John\",\n" +
+            "    \"age\": 30,\n" +
+            "    \"wwww\": {\n" +
+            "        \"address\": {\n" +
+            "            \"city\": \"New York\",\n" +
+            "            \"zip\": \"10001\"\n" +
+            "        }\n" +
+            "    }\n" +
+            "}";
+        JSONObject map = reflectiveMapper.transformer(JSONObject.parseObject(jsonString),"type1");
         System.out.println("Mapped to Map object: " + JSON.toJSONString(map));
     }
 }
