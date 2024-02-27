@@ -11,6 +11,7 @@ import com.javayh.jsonhttpextractor.config.DataTransformerProperties;
 import com.javayh.jsonhttpextractor.config.JsonMappingProperties;
 import com.javayh.jsonhttpextractor.exception.JsonConfigException;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,14 +64,10 @@ public class ReflectiveMapper {
         }
         jsonMappings.forEach(jsonMapping -> {
             String jsonPath = jsonMapping.getPath();
-            String sourceName = jsonMapping.getSourceName();
+            String targetName = jsonMapping.getTargetName();
             Object fieldValue = readFieldValue(entity, jsonPath);
             if (fieldValue != null) {
-                if (fieldValue instanceof JSONObject) {
-                    jsonObject.putAll((JSONObject) fieldValue);
-                } else {
-                    jsonObject.put(sourceName, fieldValue);
-                }
+                jsonObject.put(targetName, fieldValue);
             }
 
         });
@@ -78,8 +75,12 @@ public class ReflectiveMapper {
     }
 
     private Object readFieldValue(JSONObject jsonObject, String jsonPath) {
-        Object fieldValue = JsonPath.read(jsonObject, jsonPath);
-        return Objects.isNull(fieldValue) ? "" : fieldValue;
+        try {
+            Object fieldValue = JsonPath.read(jsonObject, jsonPath);
+            return Objects.isNull(fieldValue) ? "" : fieldValue;
+        } catch (Exception e) {
+            throw new PathNotFoundException(e.getMessage());
+        }
     }
 
 }

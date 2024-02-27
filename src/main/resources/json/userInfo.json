@@ -1,0 +1,41 @@
+{
+  "user": {
+    "id": "123456789",
+    "name": "张三",
+    "email": "zhangsan@example.com",
+    "account": {
+      "balance": 1500.50,
+      "currency": "CNY"
+    },
+    "profile": {
+      "birthdate": "1990-01-01",
+      "address": {
+        "street": "中山路",
+        "city": "北京",
+        "postal_code": "100000"
+      },
+      "security_questions": [
+        {
+          "question": "你的首选宠物是什么？",
+          "answer": "猫"
+        },
+        {
+          "question": "你的第一个老师叫什么？",
+          "answer": "李老师"
+        }
+      ]
+    },
+    "memberships": [
+      {
+        "membership_id": "A123",
+        "type": "Premium",
+        "expiration_date": "2024-12-31"
+      },
+      {
+        "membership_id": "B456",
+        "type": "Basic",
+        "expiration_date": "2023-11-30"
+      }
+    ]
+  }
+}

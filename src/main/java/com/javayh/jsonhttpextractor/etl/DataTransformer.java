@@ -31,12 +31,13 @@ public interface DataTransformer {
      * 数据转换，将上一步提取的数据，进行转换
      * </p>
      *
-     * @param data   元数据
+     * @param data 元数据
+     * @param type 需要读取配置的标识
      * @return T
      * @version 1.0.0
      * @author hai ji
      * @since 2024/2/22
      */
-    <T> T transform(JSONObject data);
+    <T> T transform(JSONObject data, String type);
 
 }

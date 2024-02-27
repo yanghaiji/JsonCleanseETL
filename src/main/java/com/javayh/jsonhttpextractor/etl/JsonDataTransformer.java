@@ -46,16 +46,15 @@ public class JsonDataTransformer implements DataTransformer {
      * 数据转换
      * </p>
      *
-     * @param data   元数据
-     * @param tClass 目标数据结构体，
+     * @param data 元数据
+     * @param type 需要读取配置的标识
      * @return T
      * @version 1.0.0
      * @author hai ji
      * @since 2024/2/22
      */
     @Override
-    public <T> T transform(JSONObject data) {
-//        return (T) reflectiveMapper.map(data);
-        return null;
+    public <T> T transform(JSONObject data, String type) {
+        return (T) reflectiveMapper.transformer(data, type);
     }
 }
