@@ -1,46 +1,55 @@
 json:
-  mapping:
-    transforms:
-      - type: "type1"
-        title: "Type 1 Title"
-        mappings:
-          - targetName: personName
-            path: "$.name"
-            describe: describe
-            operation: describe
-            sourceName: name
-          - targetName: personAge
-            path: "$.age"
-            describe: describe
-            operation: describe
-            sourceName: age
-          - targetName: personAddress
-            path: "$.wwww.address"
-            describe: describe
-            operation: describe
-            sourceName: address
+  transforms:
+    - config-id: "type1"
+      title: "Type 1 Title"
+      mappings:
+        - targetName: personName
+          path: "$.name"
+          describe: describe
+          operation: describe
+          sourceName: name
+        - targetName: personAge
+          path: "$.age"
+          describe: describe
+          operation: describe
+          sourceName: age
+        - targetName: personAddress
+          path: "$.wwww.address"
+          describe: describe
+          operation: describe
+          sourceName: address
 
-      - type: "userInfo.json"
-        title: "人员信息提取"
-        mappings:
-          - targetName: id
-            path: "$.user.id"
-            sourceName: id
-          - targetName: userName
-            path: "$.user.name"
-            sourceName: name
-          - targetName: email
-            path: "$.user.email"
-            sourceName: email
-          - targetName: balance
-            path: "$.user.account.balance"
-            sourceName: balance
-          - targetName: birthdate
-            path: "$.user.profile.birthdate"
-            sourceName: birthdate
-          - targetName: address
-            path: "$.user.profile.address"
-            sourceName: address
-          - targetName: securityQuestions
-            path: "$.user.profile.security_questions"
-            sourceName: security_questions
+    - config-id: "userInfo.json"
+      title: "人员信息提取"
+      mappings:
+        - targetName: id
+          path: "$.user.id"
+          sourceName: id
+        - targetName: userName
+          path: "$.user.name"
+          sourceName: name
+        - targetName: email
+          path: "$.user.email"
+          sourceName: email
+        - targetName: balance
+          path: "$.user.account.balance"
+          sourceName: balance
+        - targetName: birthdate
+          path: "$.user.profile.birthdate"
+          sourceName: birthdate
+        - targetName: address
+          path: "$.user.profile.address"
+          sourceName: address
+        - targetName: securityQuestions
+          path: "$.user.profile.security_questions"
+          sourceName: security_questions
+    - config-id: "hitokoto"
+      title: "hitokoto"
+      mappings:
+        - targetName: id
+          path: "$.id"
+          sourceName: id
+        - targetName: userName
+          path: "$.creator"
+        - targetName: hitokoto
+          path: "$.hitokoto"

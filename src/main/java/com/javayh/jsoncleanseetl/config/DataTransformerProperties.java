@@ -1,7 +1,6 @@
-package com.javayh.jsonhttpextractor.config;
+package com.javayh.jsoncleanseetl.config;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -17,7 +16,7 @@ import lombok.Data;
  * @since 2024-02-22
  */
 @Data
-@ConfigurationProperties(prefix = "json.mapping")
+@ConfigurationProperties(prefix = "json")
 public class DataTransformerProperties {
 
     private List<TransformConfig> transforms;
@@ -36,7 +35,7 @@ public class DataTransformerProperties {
          * 唯一标识，用于动态的读取 对应的配置
          * 推荐使用就有夜壶含义的唯一标识
          */
-        private String type;
+        private String configId;
         /**
          * 附加的描述
          */

@@ -1,10 +1,13 @@
-package com.javayh.jsonhttpextractor.etl;
+package com.javayh.jsoncleanseetl.etl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
-import com.javayh.jsonhttpextractor.config.DataTransformerProperties;
-import com.javayh.jsonhttpextractor.mapper.ReflectiveMapper;
+import com.javayh.jsoncleanseetl.config.DataTransformerProperties;
+import com.javayh.jsoncleanseetl.http.HttpUtils;
+import com.javayh.jsoncleanseetl.http.ImportJsonRequest;
+import com.javayh.jsoncleanseetl.http.SyncJsonRequest;
+import com.javayh.jsoncleanseetl.mapper.ReflectiveMapper;
 
 /**
  * <p>
@@ -37,8 +40,8 @@ public class JsonDataTransformer implements DataTransformer {
      * @since 2024/2/22
      */
     @Override
-    public <T> T extract(String data) {
-        return null;
+    public <T> T extract(SyncJsonRequest data) {
+        return (T) HttpUtils.sendRequest(data);
     }
 
     /**
@@ -47,14 +50,13 @@ public class JsonDataTransformer implements DataTransformer {
      * </p>
      *
      * @param data 元数据
-     * @param type 需要读取配置的标识
      * @return T
      * @version 1.0.0
      * @author hai ji
      * @since 2024/2/22
      */
     @Override
-    public <T> T transform(JSONObject data, String type) {
-        return (T) reflectiveMapper.transformer(data, type);
+    public <T> T transform(ImportJsonRequest data) {
+        return (T) reflectiveMapper.transformer(data.getData(), data.getConfId());
     }
 }

@@ -1,12 +1,12 @@
-package com.javayh.jsonhttpextractor;
+package com.javayh.jsoncleanseetl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.javayh.jsonhttpextractor.mapper.ReflectiveMapper;
-import com.javayh.jsonhttpextractor.util.JsonUtils;
+import com.javayh.jsoncleanseetl.mapper.ReflectiveMapper;
+import com.javayh.jsoncleanseetl.util.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
