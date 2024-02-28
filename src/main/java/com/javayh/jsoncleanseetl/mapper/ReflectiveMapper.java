@@ -1,4 +1,4 @@
-package com.javayh.jsonhttpextractor.mapper;
+package com.javayh.jsoncleanseetl.mapper;
 
 import java.util.List;
 import java.util.Objects;
@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.javayh.jsonhttpextractor.config.DataTransformerProperties;
-import com.javayh.jsonhttpextractor.config.JsonMappingProperties;
-import com.javayh.jsonhttpextractor.exception.JsonConfigException;
+import com.javayh.jsoncleanseetl.config.DataTransformerProperties;
+import com.javayh.jsoncleanseetl.config.JsonMappingProperties;
+import com.javayh.jsoncleanseetl.exception.JsonConfigException;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
@@ -34,14 +34,14 @@ public class ReflectiveMapper {
         this.jsonPathConfig = jsonPathConfig;
     }
 
-    public <T> JSONObject transformer(JSONObject entity, String type) {
+    public JSONObject transformer(JSONObject entity, String confId) {
         Optional<DataTransformerProperties.TransformConfig> first = jsonPathConfig.getTransforms().stream()
-            .filter(transformConfig -> transformConfig.getType().equals(type)).findFirst();
+            .filter(transformConfig -> transformConfig.getConfigId().equals(confId)).findFirst();
         if (first.isPresent()) {
             DataTransformerProperties.TransformConfig transformConfig = first.get();
             return mapObject(entity, transformConfig.getMappings());
         }
-        throw new JsonConfigException(type + "mapping configuration missing; please check your " +
+        throw new JsonConfigException(confId + "mapping configuration missing; please check your " +
             "dataTransformerProperties configuration.");
     }
 

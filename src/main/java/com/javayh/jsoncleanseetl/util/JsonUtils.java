@@ -1,4 +1,4 @@
-package com.javayh.jsonhttpextractor.util;
+package com.javayh.jsoncleanseetl.util;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

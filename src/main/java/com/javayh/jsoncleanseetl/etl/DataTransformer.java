@@ -1,10 +1,12 @@
-package com.javayh.jsonhttpextractor.etl;
+package com.javayh.jsoncleanseetl.etl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.javayh.jsoncleanseetl.http.ImportJsonRequest;
+import com.javayh.jsoncleanseetl.http.SyncJsonRequest;
 
 /**
  * <p>
- * json etl
+ * json httpEtl
  * </p>
  *
  * @author hai ji
@@ -24,7 +26,7 @@ public interface DataTransformer {
      * @author hai ji
      * @since 2024/2/22
      */
-    <T> T extract(String data);
+    <T> T extract(SyncJsonRequest data);
 
     /**
      * <p>
@@ -32,12 +34,22 @@ public interface DataTransformer {
      * </p>
      *
      * @param data 元数据
-     * @param type 需要读取配置的标识
      * @return T
      * @version 1.0.0
      * @author hai ji
      * @since 2024/2/22
      */
-    <T> T transform(JSONObject data, String type);
+    <T> T transform(ImportJsonRequest data);
 
+    /**
+     * 模板调用
+     *
+     * @param data 调用数据
+     * @param <T>  http 同步策略参数
+     * @return
+     */
+    default <T> T httpEtl(SyncJsonRequest data) {
+        JSONObject extract = extract(data);
+        return transform(ImportJsonRequest.reset(data, extract));
+    }
 }

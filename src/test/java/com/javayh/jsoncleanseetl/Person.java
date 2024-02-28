@@ -1,4 +1,4 @@
-package com.javayh.jsonhttpextractor;
+package com.javayh.jsoncleanseetl;
 
 import lombok.Data;
 

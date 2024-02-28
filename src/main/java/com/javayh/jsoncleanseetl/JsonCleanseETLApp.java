@@ -1,4 +1,4 @@
-package com.javayh.jsonhttpextractor;
+package com.javayh.jsoncleanseetl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,8 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024-02-22
  */
 @SpringBootApplication
-public class JSONHttpExtractorApp {
+public class JsonCleanseETLApp {
     public static void main(String[] args) {
-        SpringApplication.run(JSONHttpExtractorApp.class, args);
+        SpringApplication.run(JsonCleanseETLApp.class, args);
     }
 }

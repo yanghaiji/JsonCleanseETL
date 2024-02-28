@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.javayh.jsonhttpextractor.config.DataTransformerAutoConfiguration
+  com.javayh.jsoncleanseetl.config.DataTransformerAutoConfiguration

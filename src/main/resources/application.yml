@@ -1,11 +1,13 @@
 server:
   port: 8088
   servlet:
-    context-path: /etl
+    context-path: /httpEtl
 spring:
   profiles:
     active: dev
     include: datatransformer
+  main:
+    allow-circular-references: true
 
 
 
