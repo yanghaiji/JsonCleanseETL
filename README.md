@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <a href="https://github.com/yanghaiji/JsonCleanseETL.git">
-  <img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/JsonCleanseETL02.png" 
+  <img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/JsonCleanseETL03.png" 
   alt="Standard - JsonCleanseETL" width="500" ></a>
 </h1>
 <p align="center">
