@@ -2,7 +2,7 @@
 <h1 align="center">
   <a href="https://github.com/yanghaiji/JsonCleanseETL.git">
   <img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/JsonCleanseETL02.png" 
-  alt="Standard - JsonCleanseETL" width="500" height="300"></a>
+  alt="Standard - JsonCleanseETL" width="500" ></a>
 </h1>
 <p align="center">
     <a href="https://spring.io/projects"><img src='https://img.shields.io/badge/license-Apache%202-borightgreen' 
