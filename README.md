@@ -1,22 +1,27 @@
 
 <h1 align="center">
   <a href="https://github.com/yanghaiji/JsonCleanseETL.git">
-  <img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/JsonCleanseETL.png" 
-  alt="Standard - JsonCleanseETL" width="500"></a>
+  <img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/JsonCleanseETL02.png" 
+  alt="Standard - JsonCleanseETL" width="500" height="300"></a>
 </h1>
 <p align="center">
     <a href="https://spring.io/projects"><img src='https://img.shields.io/badge/license-Apache%202-borightgreen' 
     alt='License'/></a>
-    <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-2.6.4
-    -brightgreen)" alt="npm version"></a>
+    <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring%20Boot-2.6.4-brightgreen)" alt="spring version"></a>
     <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" 
     alt="Standard - Java Style Guide"></a>
 </p>
 
 ## 项目描述
 
-JSONCleanseETL 是一款专业的数据清洗和转换工具，旨在使用户能够有效地处理 JSON 格式的数据。该工具不仅支持用户上传 JSON 数据进行处理，
-还能够通过 HTTP 自动调用指定的 URL 获取数据，并对其进行清洗和转换，以满足不同场景下的数据处理需求。
+JSONCleanseETL是一款专业的数据清洗和转换工具，旨在为用户提供高效处理JSON格式数据的解决方案。
+该工具不仅支持用户上传JSON数据进行处理，更具备通过HTTP自动调用指定URL获取数据的功能，并在数据到达后即刻进行清洗和转换，
+以满足不同场景下的数据处理需求。这项创新技术为用户提供了一种前所未有的便捷性和灵活性，使其能够轻松应对多变的数据处理挑战。
+
+## Logo Idea
+
+JSONCleanseETL犹如蜘蛛，在错综复杂的数据网络中敏捷穿梭，巧妙地捕捉、清洗和转换着JSON数据。就像蜘蛛利用编织的网捕捉猎物一样，
+JSONCleanseETL通过其独特的技艺，在数据的纷繁中寻找并处理信息。蜘蛛的网成为数据结构的象征，而蜘蛛捕猎的技巧则恰似JSONCleanseETL处理数据的过程。
 
 ## 主要功能
 
@@ -32,6 +37,14 @@ JSONCleanseETL 是一款专业的数据清洗和转换工具，旨在使用户�
 ## 测试样例
 
 > 将项目下`doc/http/ETL.postman_collection.json` 的json文件导入到postman内进行测试
+
+## JsonPath Test 工具
+
+为方便大家验证编写的`json path`路径,已经保护敏感数据，`JsonCleanse`ETL也提供了界面友好的`json path`测试页面
+
+启动项目访问`http://localhost:8088/etl/index`，效果如下
+
+<img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/jsonpath_test.png"  alt="Standard - jsonpath_test" width="500" height="300">
 
 ## 附录 
 
