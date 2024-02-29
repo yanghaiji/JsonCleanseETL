@@ -1,7 +1,7 @@
 server:
   port: 8088
   servlet:
-    context-path: /httpEtl
+    context-path: /etl
 spring:
   profiles:
     active: dev

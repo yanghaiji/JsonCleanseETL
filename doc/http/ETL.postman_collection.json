@@ -1,0 +1,68 @@
+{
+	"info": {
+		"_postman_id": "f7350008-c450-4b95-bbc7-dc5851116aec",
+		"name": "ETL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10384285"
+	},
+	"item": [
+		{
+			"name": "transformer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"confId\": \"\",\r\n    \"data\": {\r\n        \"user\": {\r\n            \"id\": \"123456789\",\r\n            \"name\": \"张三\",\r\n            \"email\": \"zhangsan@example.com\",\r\n            \"account\": {\r\n                \"balance\": 1500.50,\r\n                \"currency\": \"CNY\"\r\n            },\r\n            \"profile\": {\r\n                \"birthdate\": \"1990-01-01\",\r\n                \"address\": {\r\n                    \"street\": \"中山路\",\r\n                    \"city\": \"北京\",\r\n                    \"postal_code\": \"100000\"\r\n                },\r\n                \"security_questions\": [\r\n                    {\r\n                        \"question\": \"你的首选宠物是什么？\",\r\n                        \"answer\": \"猫\"\r\n                    },\r\n                    {\r\n                        \"question\": \"你的第一个老师叫什么？\",\r\n                        \"answer\": \"李老师\"\r\n                    }\r\n                ]\r\n            },\r\n            \"memberships\": [\r\n                {\r\n                    \"membership_id\": \"A123\",\r\n                    \"type\": \"Premium\",\r\n                    \"expiration_date\": \"2024-12-31\"\r\n                },\r\n                {\r\n                    \"membership_id\": \"B456\",\r\n                    \"type\": \"Basic\",\r\n                    \"expiration_date\": \"2023-11-30\"\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8088/etl/transformer/import",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"etl",
+						"transformer",
+						"import"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "同步http数据",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"confId\": \"hitokoto\",\r\n    \"method\": \"POST\",\r\n    \"url\": \"https://v1.hitokoto.cn\",\r\n    \"headers\":{\r\n        \"User-Agent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\"\r\n    }\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8088/etl/transformer/sync",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"etl",
+						"transformer",
+						"sync"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

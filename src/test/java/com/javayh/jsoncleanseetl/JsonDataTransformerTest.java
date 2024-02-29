@@ -5,17 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.javayh.jsoncleanseetl.mapper.ReflectiveMapper;
+import com.javayh.jsoncleanseetl.etl.DataTransformer;
+import com.javayh.jsoncleanseetl.http.ImportJsonRequest;
 import com.javayh.jsoncleanseetl.util.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
-public class ReflectiveMapperTest {
+public class JsonDataTransformerTest {
 
     @Autowired
-    private ReflectiveMapper reflectiveMapper;
+    private DataTransformer dataTransformer;
 
     /**
      * 简单的数据节点的移动
@@ -34,7 +35,10 @@ public class ReflectiveMapperTest {
             "        }\n" +
             "    }\n" +
             "}";
-        JSONObject map = reflectiveMapper.transformer(JSONObject.parseObject(jsonString), "type1");
+        ImportJsonRequest importJsonRequest = new ImportJsonRequest();
+        importJsonRequest.setConfId("type1");
+        importJsonRequest.setData((JSONObject.parseObject(jsonString)));
+        JSONObject map = dataTransformer.transform(importJsonRequest);
         System.out.println("Mapped to Map object: " + JSON.toJSONString(map));
     }
 
@@ -70,7 +74,20 @@ public class ReflectiveMapperTest {
     @Test
     public void testUserInfo() throws Exception {
         JSONObject json = JsonUtils.readJsonFromClassPath("json/userInfo.json", JSONObject.class);
-        JSONObject map = reflectiveMapper.transformer(json, "userInfo.json");
+        ImportJsonRequest importJsonRequest = new ImportJsonRequest();
+        importJsonRequest.setConfId("userInfo.json");
+        importJsonRequest.setData(json);
+        JSONObject map = dataTransformer.transform(importJsonRequest);
+        log.info("Mapped to Map object: {}", JSON.toJSONString(map));
+    }
+
+    @Test
+    public void testUserInfo2() throws Exception {
+        JSONObject json = JsonUtils.readJsonFromClassPath("json/userInfo.json", JSONObject.class);
+        ImportJsonRequest importJsonRequest = new ImportJsonRequest();
+        importJsonRequest.setConfId("userInfo2.json");
+        importJsonRequest.setData(json);
+        JSONObject map = dataTransformer.transform(importJsonRequest);
         log.info("Mapped to Map object: {}", JSON.toJSONString(map));
     }
 }
