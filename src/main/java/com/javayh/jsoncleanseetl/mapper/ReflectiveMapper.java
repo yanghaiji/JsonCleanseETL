@@ -2,14 +2,10 @@ package com.javayh.jsoncleanseetl.mapper;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.javayh.jsoncleanseetl.config.DataTransformerProperties;
 import com.javayh.jsoncleanseetl.config.JsonMappingProperties;
-import com.javayh.jsoncleanseetl.exception.JsonConfigException;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
@@ -25,29 +21,11 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2024-02-22
  */
 @Slf4j
-@Component
 public class ReflectiveMapper {
-
-    private final DataTransformerProperties jsonPathConfig;
-
-    public ReflectiveMapper(DataTransformerProperties jsonPathConfig) {
-        this.jsonPathConfig = jsonPathConfig;
-    }
-
-    public JSONObject transformer(JSONObject entity, String confId) {
-        Optional<DataTransformerProperties.TransformConfig> first = jsonPathConfig.getTransforms().stream()
-            .filter(transformConfig -> transformConfig.getConfigId().equals(confId)).findFirst();
-        if (first.isPresent()) {
-            DataTransformerProperties.TransformConfig transformConfig = first.get();
-            return mapObject(entity, transformConfig.getMappings());
-        }
-        throw new JsonConfigException(confId + "mapping configuration missing; please check your " +
-            "dataTransformerProperties configuration.");
-    }
 
     /**
      * <p>
-     *
+     * 数据结构转换
      * </p>
      *
      * @param entity       源数据
@@ -57,29 +35,32 @@ public class ReflectiveMapper {
      * @author hai ji
      * @since 2024/2/26
      */
-    private JSONObject mapObject(JSONObject entity, List<JsonMappingProperties> jsonMappings) {
-        JSONObject jsonObject = new JSONObject();
+    public static JSONObject mapper(JSONObject entity, List<JsonMappingProperties> jsonMappings) {
+        JSONObject data = new JSONObject();
         if (CollectionUtils.isEmpty(jsonMappings)) {
-            return jsonObject;
+            return data;
         }
         jsonMappings.forEach(jsonMapping -> {
             String jsonPath = jsonMapping.getPath();
             String targetName = jsonMapping.getTargetName();
             Object fieldValue = readFieldValue(entity, jsonPath);
             if (fieldValue != null) {
-                jsonObject.put(targetName, fieldValue);
+                data.put(targetName, fieldValue);
             }
 
         });
-        return jsonObject;
+        return data;
     }
 
-    private Object readFieldValue(JSONObject jsonObject, String jsonPath) {
+    public static Object readFieldValue(JSONObject jsonObject, String jsonPath) {
         try {
-            Object fieldValue = JsonPath.read(jsonObject, jsonPath);
+            //fix 防止当路径过程时自动换或者抒写时产生多余的空格
+            String newJsonPath = jsonPath.replaceAll("\\s+", "");
+            Object fieldValue = JsonPath.read(jsonObject, newJsonPath);
             return Objects.isNull(fieldValue) ? "" : fieldValue;
         } catch (Exception e) {
-            throw new PathNotFoundException(e.getMessage());
+            log.error("JSON path {} is not valid: {}",jsonPath,e.getMessage());
+            throw new PathNotFoundException("JSON path '$.name' is not valid: "+e.getMessage());
         }
     }
 

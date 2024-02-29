@@ -1,9 +1,11 @@
 package com.javayh.jsoncleanseetl.etl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.alibaba.fastjson.JSONObject;
 import com.javayh.jsoncleanseetl.config.DataTransformerProperties;
+import com.javayh.jsoncleanseetl.exception.JsonConfigException;
 import com.javayh.jsoncleanseetl.http.HttpUtils;
 import com.javayh.jsoncleanseetl.http.ImportJsonRequest;
 import com.javayh.jsoncleanseetl.http.SyncJsonRequest;
@@ -23,9 +25,6 @@ public class JsonDataTransformer implements DataTransformer {
 
     @Autowired
     private DataTransformerProperties transformerProperties;
-
-    @Autowired
-    private ReflectiveMapper reflectiveMapper;
 
 
     /**
@@ -57,6 +56,14 @@ public class JsonDataTransformer implements DataTransformer {
      */
     @Override
     public <T> T transform(ImportJsonRequest data) {
-        return (T) reflectiveMapper.transformer(data.getData(), data.getConfId());
+        String confId = data.getConfId();
+        Optional<DataTransformerProperties.TransformConfig> first = transformerProperties.getTransforms().stream()
+            .filter(transformConfig -> transformConfig.getConfigId().equals(confId)).findFirst();
+        if (first.isPresent()) {
+            DataTransformerProperties.TransformConfig transformConfig = first.get();
+            return (T) ReflectiveMapper.mapper(data.getData(), transformConfig.getMappings());
+        }
+        throw new JsonConfigException(confId + "mapping configuration missing; please check your " +
+            "dataTransformerProperties configuration.");
     }
 }
