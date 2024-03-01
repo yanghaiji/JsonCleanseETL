@@ -3,13 +3,17 @@ package com.javayh.jsoncleanseetl.api;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
+import com.javayh.jsoncleanseetl.config.DataTransformerProperties;
 import com.javayh.jsoncleanseetl.etl.DataTransformer;
+import com.javayh.jsoncleanseetl.file.FileAndJsonRequest;
+import com.javayh.jsoncleanseetl.file.FileProcessTemplate;
 import com.javayh.jsoncleanseetl.http.ImportJsonRequest;
 import com.javayh.jsoncleanseetl.http.SyncJsonRequest;
 
@@ -32,6 +36,12 @@ public class JsonTransformerController {
     @Autowired
     private DataTransformer dataTransformer;
 
+    @Autowired
+    private FileProcessTemplate fileProcessTemplate;
+
+    @Autowired
+    private DataTransformerProperties dataTransformerProperties;
+
     /**
      * 手动导出json数据，进行解析
      *
@@ -45,16 +55,44 @@ public class JsonTransformerController {
 
     /**
      * <p>
-     *      根据请求的url自定获取源数据并解析
+     * 根据请求的url自定获取源数据并解析
      * </p>
+     *
+     * @param request 请求参数的元数据 {@link SyncJsonRequest}
+     * @return org.springframework.http.ResponseEntity<com.alibaba.fastjson.JSONObject>
      * @version 1.0.0
      * @author hai ji
      * @since 2024/2/27
-     * @param request 请求参数的元数据 {@link SyncJsonRequest}
-     * @return org.springframework.http.ResponseEntity<com.alibaba.fastjson.JSONObject>
      */
     @PostMapping(value = "/sync")
     public ResponseEntity<JSONObject> syncTransformer(@Valid @RequestBody SyncJsonRequest request) {
         return ResponseEntity.ok(dataTransformer.httpEtl(request));
+    }
+
+    /**
+     * <p>
+     * 通过excel的方式上传
+     * </p>
+     *
+     * @return org.springframework.http.ResponseEntity<?>
+     * @version 1.0.0
+     * @author hai ji
+     * @since 2024/2/29
+     */
+    @PostMapping("/upload")
+    public ResponseEntity<?> handleFileAndJsonUpload(FileAndJsonRequest request) {
+        try {
+
+            DataTransformerProperties.TransformConfig transformConfig = fileProcessTemplate.process(request);
+            dataTransformerProperties.add(transformConfig);
+            ImportJsonRequest importJsonRequest = new ImportJsonRequest(transformConfig.getConfigId(),
+                JSONObject.parseObject(request.getData()));
+            JSONObject transform = dataTransformer.transform(importJsonRequest);
+            dataTransformerProperties.remove(transformConfig);
+            return ResponseEntity.ok(transform);
+        } catch (Exception e) {
+            log.error("handleFileAndJsonUpload {}", e.getMessage(), e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
