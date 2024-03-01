@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Caller</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.1.8/jsoneditor.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1400px; /* 调整最大宽度 */
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        #apiForm {
+            margin-bottom: 20px;
+        }
+
+        #jsonPath {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        #submitBtn {
+            flex: none;
+        }
+
+        .editor-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #jsonDataEditor, #response {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            background-color: #ffffff;
+            overflow: auto;
+            margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .row-cols-2 > * {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+        h1 {
+            font-size: 36px;
+            color: #333333;
+            margin-bottom: 20px;
+            text-align: center; /* 居中显示 */
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>JsonCleanseETL JsonPath Test API Caller</h1>
+    <form id="apiForm" class="d-flex align-items-center">
+        <input type="text" id="jsonPath" name="jsonPath" class="form-control" required placeholder="Enter JSON Path">
+        <button type="submit" id="submitBtn" class="btn btn-primary">Call API</button>
+    </form>
+    <div class="row row-cols-2">
+        <div class="col">
+            <div class="editor-label">Request Data</div>
+            <div id="jsonDataEditor"></div>
+        </div>
+        <div class="col">
+            <div class="editor-label">Response Data</div>
+            <div id="response"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.1.8/jsoneditor.min.js"></script>
+<script>
+    var jsonDataEditor = new JSONEditor(document.getElementById('jsonDataEditor'), {
+        mode: 'code',
+        scrollParent: true // 设置滚动条模式为'scroll'
+    });
+
+    var responseEditor = new JSONEditor(document.getElementById('response'), {
+        mode: 'code',
+        readOnly: true,
+        scrollParent: true // 设置滚动条模式为'scroll'
+    });
+
+    $(document).ready(function () {
+        $('#apiForm').submit(function (event) {
+            event.preventDefault();
+            var jsonData = jsonDataEditor.get();
+            var jsonPath = $('#jsonPath').val();
+            $.ajax({
+                type: 'POST',
+                url: '/etl/jsonpath',
+                contentType: 'application/json',
+                data: JSON.stringify({jsonPath: jsonPath, data: jsonData}),
+                success: function (data) {
+                    responseEditor.set(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error calling API:', error);
+                    alert('Error calling API: ' + error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

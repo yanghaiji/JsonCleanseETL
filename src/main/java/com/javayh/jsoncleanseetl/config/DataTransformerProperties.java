@@ -1,6 +1,7 @@
 package com.javayh.jsoncleanseetl.config;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -27,6 +28,16 @@ public class DataTransformerProperties {
 
     public void setTransforms(List<TransformConfig> transforms) {
         this.transforms = transforms;
+    }
+
+
+    public void add(TransformConfig config) {
+        transforms.add(config);
+    }
+
+    public void remove(TransformConfig config) {
+        setTransforms(transforms.stream().filter(o -> !o.getConfigId().equals(config.getConfigId()))
+            .collect(Collectors.toList()));
     }
 
     @Data

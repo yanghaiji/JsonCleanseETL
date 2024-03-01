@@ -1,5 +1,14 @@
 package com.javayh.jsoncleanseetl.config;
 
+import java.io.InputStream;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
 import lombok.Data;
 
 /**
@@ -15,29 +24,36 @@ import lombok.Data;
 @Data
 public class JsonMappingProperties {
 
-    /**
-     * 附加操作，预留字段
-     */
-    private String operation;
-
-    /**
-     * 取值的一些描述，方便后期的维护
-     */
-    private String describe;
 
     /**
      * 源字段的名字
      */
+    @Excel(name = "SourceName")
     private String sourceName;
 
     /**
      * 目标字段的名字，用于生成后字段名字的修改
      */
+    @Excel(name = "TargetName")
     private String targetName;
 
     /**
      * 取数的json path
      */
+    @Excel(name = "Path")
     private String path;
+
+    /**
+     * 取值的一些描述，方便后期的维护
+     */
+    @Excel(name = "Describe")
+    private String describe;
+
+    /**
+     * 附加操作，预留字段
+     */
+    @Excel(name = "Operation")
+    private String operation;
+
 
 }
