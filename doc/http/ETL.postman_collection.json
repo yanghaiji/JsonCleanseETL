@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"confId\": \"\",\r\n    \"data\": {\r\n        \"user\": {\r\n            \"id\": \"123456789\",\r\n            \"name\": \"张三\",\r\n            \"email\": \"zhangsan@example.com\",\r\n            \"account\": {\r\n                \"balance\": 1500.50,\r\n                \"currency\": \"CNY\"\r\n            },\r\n            \"profile\": {\r\n                \"birthdate\": \"1990-01-01\",\r\n                \"address\": {\r\n                    \"street\": \"中山路\",\r\n                    \"city\": \"北京\",\r\n                    \"postal_code\": \"100000\"\r\n                },\r\n                \"security_questions\": [\r\n                    {\r\n                        \"question\": \"你的首选宠物是什么？\",\r\n                        \"answer\": \"猫\"\r\n                    },\r\n                    {\r\n                        \"question\": \"你的第一个老师叫什么？\",\r\n                        \"answer\": \"李老师\"\r\n                    }\r\n                ]\r\n            },\r\n            \"memberships\": [\r\n                {\r\n                    \"membership_id\": \"A123\",\r\n                    \"type\": \"Premium\",\r\n                    \"expiration_date\": \"2024-12-31\"\r\n                },\r\n                {\r\n                    \"membership_id\": \"B456\",\r\n                    \"type\": \"Basic\",\r\n                    \"expiration_date\": \"2023-11-30\"\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
+					"raw": "{\r\n    \"confId\": \"userInfo.json\",\r\n    \"data\": {\r\n        \"user\": {\r\n            \"id\": \"123456789\",\r\n            \"name\": \"张三\",\r\n            \"email\": \"zhangsan@example.com\",\r\n            \"account\": {\r\n                \"balance\": 1500.50,\r\n                \"currency\": \"CNY\"\r\n            },\r\n            \"profile\": {\r\n                \"birthdate\": \"1990-01-01\",\r\n                \"address\": {\r\n                    \"street\": \"中山路\",\r\n                    \"city\": \"北京\",\r\n                    \"postal_code\": \"100000\"\r\n                },\r\n                \"security_questions\": [\r\n                    {\r\n                        \"question\": \"你的首选宠物是什么？\",\r\n                        \"answer\": \"猫\"\r\n                    },\r\n                    {\r\n                        \"question\": \"你的第一个老师叫什么？\",\r\n                        \"answer\": \"李老师\"\r\n                    }\r\n                ]\r\n            },\r\n            \"memberships\": [\r\n                {\r\n                    \"membership_id\": \"A123\",\r\n                    \"type\": \"Premium\",\r\n                    \"expiration_date\": \"2024-12-31\"\r\n                },\r\n                {\r\n                    \"membership_id\": \"B456\",\r\n                    \"type\": \"Basic\",\r\n                    \"expiration_date\": \"2023-11-30\"\r\n                }\r\n            ]\r\n        }\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -59,6 +59,44 @@
 						"etl",
 						"transformer",
 						"sync"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "upload file",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "JsonCleanseETLTemplate.xlsx"
+						},
+						{
+							"key": "data",
+							"value": "{\n  \"user\": {\n    \"id\": \"123456789\",\n    \"name\": \"张三\",\n    \"email\": \"zhangsan@example.com\",\n    \"account\": {\n      \"balance\": 1500.50,\n      \"currency\": \"CNY\"\n    },\n    \"profile\": {\n      \"birthdate\": \"1990-01-01\",\n      \"address\": {\n        \"street\": \"中山路\",\n        \"city\": \"北京\",\n        \"postal_code\": \"100000\"\n      },\n      \"security_questions\": [\n        {\n          \"question\": \"你的首选宠物是什么？\",\n          \"answer\": \"猫\"\n        },\n        {\n          \"question\": \"你的第一个老师叫什么？\",\n          \"answer\": \"李老师\"\n        }\n      ]\n    },\n    \"memberships\": [\n      {\n        \"membership_id\": \"A123\",\n        \"type\": \"Premium\",\n        \"expiration_date\": \"2024-12-31\"\n      },\n      {\n        \"membership_id\": \"B456\",\n        \"type\": \"Basic\",\n        \"expiration_date\": \"2023-11-30\"\n      }\n    ]\n  }\n}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8088/etl/transformer/upload",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"etl",
+						"transformer",
+						"upload"
 					]
 				}
 			},

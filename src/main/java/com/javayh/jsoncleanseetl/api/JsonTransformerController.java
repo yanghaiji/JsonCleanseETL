@@ -2,8 +2,8 @@ package com.javayh.jsoncleanseetl.api;
 
 import javax.validation.Valid;
 
+import org.apache.commons.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,19 +80,13 @@ public class JsonTransformerController {
      * @since 2024/2/29
      */
     @PostMapping("/upload")
-    public ResponseEntity<?> handleFileAndJsonUpload(FileAndJsonRequest request) {
-        try {
-
-            DataTransformerProperties.TransformConfig transformConfig = fileProcessTemplate.process(request);
-            dataTransformerProperties.add(transformConfig);
-            ImportJsonRequest importJsonRequest = new ImportJsonRequest(transformConfig.getConfigId(),
-                JSONObject.parseObject(request.getData()));
-            JSONObject transform = dataTransformer.transform(importJsonRequest);
-            dataTransformerProperties.remove(transformConfig);
-            return ResponseEntity.ok(transform);
-        } catch (Exception e) {
-            log.error("handleFileAndJsonUpload {}", e.getMessage(), e);
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> handleFileAndJsonUpload(FileAndJsonRequest request) throws FileUploadException {
+        DataTransformerProperties.TransformConfig transformConfig = fileProcessTemplate.process(request);
+        dataTransformerProperties.add(transformConfig);
+        ImportJsonRequest importJsonRequest = new ImportJsonRequest(transformConfig.getConfigId(),
+            JSONObject.parseObject(request.getData()));
+        JSONObject transform = dataTransformer.transform(importJsonRequest);
+        dataTransformerProperties.remove(transformConfig);
+        return ResponseEntity.ok(transform);
     }
 }
