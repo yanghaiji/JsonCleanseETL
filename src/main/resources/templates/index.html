@@ -64,7 +64,7 @@
                 max-width: 50%;
             }
         }
-        h1 {
+        h3 {
             font-size: 36px;
             color: #333333;
             margin-bottom: 20px;
@@ -75,7 +75,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>JsonCleanseETL JsonPath Test API Caller</h1>
+    <h3>JsonCleanseETL JsonPath Test API Caller</h3>
     <form id="apiForm" class="d-flex align-items-center">
         <input type="text" id="jsonPath" name="jsonPath" class="form-control" required placeholder="Enter JSON Path">
         <button type="submit" id="submitBtn" class="btn btn-primary">Call API</button>
@@ -101,7 +101,7 @@
     });
 
     var responseEditor = new JSONEditor(document.getElementById('response'), {
-        mode: 'code',
+        modes: ['tree','code'],
         readOnly: true,
         scrollParent: true // 设置滚动条模式为'scroll'
     });

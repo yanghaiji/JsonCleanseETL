@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON可视化编辑器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.0.2/jsoneditor.min.css"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+        }
+
+        #editor-container {
+            flex: 1;
+            border-right: 1px solid #ccc;
+        }
+
+        #json-path-container {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="editor-container"></div>
+
+<div id="json-path-container">
+    <h2>JSON路径</h2>
+    <input type="text" id="json-path-input" style="width: 100%; margin-bottom: 10px;">
+    <div id="json-path"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.0.2/jsoneditor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsonpath/1.0.0/jsonpath.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editorContainer = document.getElementById('editor-container');
+        const jsonPathInput = document.getElementById('json-path-input');
+
+        // 初始化左侧JSON编辑器
+        const leftEditor = new JSONEditor(editorContainer, {
+            mode: 'code', // 显示代码模式
+            onChange: function () {
+                try {
+                    const json = JSON.parse(leftEditor.getText()); // 获取JSON数据
+                    renderJSON(json); // 显示JSON数据
+                } catch (error) {
+                    console.error('Error in onChange callback:', error.message);
+                }
+            }
+        });
+
+        // 渲染JSON数据
+        function renderJSON(json) {
+            // 设置JSON数据到右侧JSON编辑器中
+            rightEditor.set(json);
+            // 生成并设置JSON路径
+            const jsonPath = generateJSONPath(rightEditor);
+            jsonPathInput.value = jsonPath;
+        }
+
+        // 初始化右侧JSON编辑器
+        const jsonPathContainer = document.getElementById('json-path');
+        const rightEditor = new JSONEditor(jsonPathContainer, {
+            modes: ['tree'], // 只显示树形结构模式
+        });
+
+        // 添加点击事件监听器
+        rightEditor.element.addEventListener('click', function(event) {
+            const selectedNode = event.target.closest('.jsoneditor-value');
+            console.log("Selected Node:", selectedNode);
+            if (selectedNode) {
+                console.log("Clicked!");
+                const jsonPath = generateJSONPath(selectedNode);
+                jsonPathInput.value = jsonPath;
+            }
+        });
+
+        // 从节点生成路径
+        function generateJSONPath(node) {
+            const pathNodes = [];
+
+            let currentNode = node;
+            while (currentNode) {
+                console.log('Current node:', currentNode);
+
+                if (currentNode.classList && currentNode.classList.contains('jsoneditor-value')) {
+                    const keyElement = currentNode.querySelector('.jsoneditor-field');
+                    if (keyElement) {
+                        const key = keyElement.textContent.trim();
+                        pathNodes.unshift(key);
+                    }
+                }
+
+                currentNode = currentNode.parentNode;
+            }
+
+            return '$.' + pathNodes.join('.');
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

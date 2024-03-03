@@ -1,6 +1,5 @@
 package com.javayh.jsoncleanseetl.file;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileUploadException;
@@ -34,13 +33,16 @@ public interface FileProcessTemplate {
      *
      * @param file 带解析的文件
      * @return {@link JsonMappingProperties} 解析后的文件映射成mapping
+     * @throws Exception 文件上传失败的异常
      */
     List<JsonMappingProperties> analysis(MultipartFile file) throws Exception;
 
     /**
      * 数据处理模板
-     * @param file 数据啊原始文件
+     *
+     * @param request 数据啊原始文件
      * @return DataTransformerProperties.TransformConfig
+     * @throws FileUploadException 文件上传失败的异常
      */
     default DataTransformerProperties.TransformConfig process(FileAndJsonRequest request) throws FileUploadException {
         try {
