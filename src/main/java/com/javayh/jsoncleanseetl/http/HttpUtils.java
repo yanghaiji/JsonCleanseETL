@@ -5,8 +5,8 @@ import java.util.Map;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSONObject;
+import com.javayh.jsoncleanseetl.util.RestTemplateUtil;
 
 /**
  * <p>
@@ -18,8 +18,6 @@ import com.alibaba.fastjson.JSONObject;
  * @since 2024/2/27
  */
 public class HttpUtils {
-
-    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
     /**
      * 统一的 http工具
@@ -35,6 +33,7 @@ public class HttpUtils {
         HttpMethod method = HttpMethod.resolve(request.getMethod());
         HttpEntity<Object> httpEntity = new HttpEntity<>(request.getRequestBody(), httpHeaders);
 
-        return JSONObject.parseObject(REST_TEMPLATE.exchange(request.getUrl(), method, httpEntity, String.class).getBody());
+        return JSONObject.parseObject(RestTemplateUtil.getRestTemplate()
+            .exchange(request.getUrl(), method, httpEntity, String.class).getBody());
     }
 }

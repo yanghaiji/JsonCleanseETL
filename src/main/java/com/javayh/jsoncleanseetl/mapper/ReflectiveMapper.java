@@ -1,12 +1,11 @@
 package com.javayh.jsoncleanseetl.mapper;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.javayh.jsoncleanseetl.config.JsonMappingProperties;
-import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,24 +42,23 @@ public class ReflectiveMapper {
         jsonMappings.forEach(jsonMapping -> {
             String jsonPath = jsonMapping.getPath();
             String targetName = jsonMapping.getTargetName();
-            Object fieldValue = readFieldValue(entity, jsonPath);
-            if (fieldValue != null) {
-                data.put(targetName, fieldValue);
+            Optional<Object> fieldValue = readFieldValue(entity, jsonPath);
+            fieldValue.ifPresent(value -> data.put(targetName, value));
+            if (!fieldValue.isPresent()) {
+                data.put(targetName, null); // 将 null 值放入结果中
             }
-
         });
         return data;
     }
 
-    public static Object readFieldValue(JSONObject jsonObject, String jsonPath) {
+    public static Optional<Object> readFieldValue(JSONObject jsonObject, String jsonPath) {
         try {
-            //fix 防止当路径过程时自动换或者抒写时产生多余的空格
+            // fix 防止当路径过程时自动换或者抒写时产生多余的空格
             String newJsonPath = jsonPath.replaceAll("\\s+", "");
-            Object fieldValue = JsonPath.read(jsonObject, newJsonPath);
-            return Objects.isNull(fieldValue) ? "" : fieldValue;
+            return Optional.ofNullable(JceJsonPathReader.read(jsonObject, newJsonPath));
         } catch (Exception e) {
-            log.error("JSON path {} is not valid: {}",jsonPath,e.getMessage());
-            throw new PathNotFoundException("JSON path '$.name' is not valid: "+e.getMessage());
+            log.error("JSON path {} is not valid: {}", jsonPath, e.getMessage());
+            throw new PathNotFoundException("JSON path '$.name' is not valid: " + e.getMessage());
         }
     }
 
