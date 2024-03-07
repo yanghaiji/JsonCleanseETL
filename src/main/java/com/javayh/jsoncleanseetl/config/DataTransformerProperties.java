@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import com.javayh.jsoncleanseetl.util.DefaultValueEnum;
+
 import lombok.Data;
 
 /**
