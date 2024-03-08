@@ -3,109 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON可视化编辑器</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.0.2/jsoneditor.min.css"/>
+    <title>JSON Visualization</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #container {
             display: flex;
+            flex-direction: column;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            background-color: #f0f0f0;
         }
 
-        #editor-container {
-            flex: 1;
-            border-right: 1px solid #ccc;
-        }
-
-        #json-path-container {
-            flex: 1;
+        #inputContainer {
             padding: 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #cccccc;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+        }
+
+        #inputContainer input {
+            width: calc(100% - 90px);
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        #copyButton {
+            margin-left: 10px;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #copyButton:hover {
+            background-color: #0056b3;
+        }
+
+        #copySuccess {
+            color: green;
+            margin-left: 10px;
+            display: none;
+        }
+
+        #mainContainer {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #left, #right {
+            flex: 1;
+            overflow: auto;
+        }
+
+        #left {
+            border-right: 1px solid #cccccc;
+        }
+
+        textarea, #jsonDisplay {
+            width: calc(100% - 22px); /* Adjusted for scrollbar width */
+            min-height: calc(100vh - 110px); /* 100vh - inputContainer height - input height */
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            background-color: #ffffff;
+            box-sizing: border-box;
+            overflow: auto; /* Ensure textarea always shows scrollbar */
+            resize: none;
+            outline: none;
+        }
+
+        .jsonKey {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .jsonIndent {
+            margin-left: 20px;
+            display: none;
+        }
+
+        .show {
+            display: block;
         }
     </style>
 </head>
 <body>
-
-<div id="editor-container"></div>
-
-<div id="json-path-container">
-    <h2>JSON路径</h2>
-    <input type="text" id="json-path-input" style="width: 100%; margin-bottom: 10px;">
-    <div id="json-path"></div>
+<div id="container">
+    <div id="inputContainer">
+        <input type="text" id="jsonPath" readonly placeholder="JSON Path">
+        <button id="copyButton">Copy</button>
+        <span id="copySuccess">Copied!</span>
+    </div>
+    <div id="mainContainer">
+        <div id="left">
+            <textarea id="jsonData" placeholder="Enter JSON data"></textarea>
+        </div>
+        <div id="right">
+            <div id="jsonDisplay"></div>
+        </div>
+    </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.0.2/jsoneditor.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsonpath/1.0.0/jsonpath.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const editorContainer = document.getElementById('editor-container');
-        const jsonPathInput = document.getElementById('json-path-input');
+    let jsonDataElement = document.getElementById('jsonData');
+    let jsonDisplayElement = document.getElementById('jsonDisplay');
+    let jsonPathElement = document.getElementById('jsonPath');
+    let copyButton = document.getElementById('copyButton');
+    let copySuccess = document.getElementById('copySuccess');
 
-        // 初始化左侧JSON编辑器
-        const leftEditor = new JSONEditor(editorContainer, {
-            mode: 'code', // 显示代码模式
-            onChange: function () {
-                try {
-                    const json = JSON.parse(leftEditor.getText()); // 获取JSON数据
-                    renderJSON(json); // 显示JSON数据
-                } catch (error) {
-                    console.error('Error in onChange callback:', error.message);
-                }
-            }
-        });
-
-        // 渲染JSON数据
-        function renderJSON(json) {
-            // 设置JSON数据到右侧JSON编辑器中
-            rightEditor.set(json);
-            // 生成并设置JSON路径
-            const jsonPath = generateJSONPath(rightEditor);
-            jsonPathInput.value = jsonPath;
+    jsonDataElement.addEventListener('input', function () {
+        try {
+            let jsonData = JSON.parse(this.value);
+            jsonDisplayElement.innerHTML = '';
+            visualizeJSON(jsonData, jsonDisplayElement);
+        } catch (error) {
+            console.error('Invalid JSON format');
         }
-
-        // 初始化右侧JSON编辑器
-        const jsonPathContainer = document.getElementById('json-path');
-        const rightEditor = new JSONEditor(jsonPathContainer, {
-            modes: ['tree'], // 只显示树形结构模式
-        });
-
-        // 添加点击事件监听器
-        rightEditor.element.addEventListener('click', function(event) {
-            const selectedNode = event.target.closest('.jsoneditor-value');
-            console.log("Selected Node:", selectedNode);
-            if (selectedNode) {
-                console.log("Clicked!");
-                const jsonPath = generateJSONPath(selectedNode);
-                jsonPathInput.value = jsonPath;
-            }
-        });
-
-        // 从节点生成路径
-        function generateJSONPath(node) {
-            const pathNodes = [];
-
-            let currentNode = node;
-            while (currentNode) {
-                console.log('Current node:', currentNode);
-
-                if (currentNode.classList && currentNode.classList.contains('jsoneditor-value')) {
-                    const keyElement = currentNode.querySelector('.jsoneditor-field');
-                    if (keyElement) {
-                        const key = keyElement.textContent.trim();
-                        pathNodes.unshift(key);
-                    }
-                }
-
-                currentNode = currentNode.parentNode;
-            }
-
-            return '$.' + pathNodes.join('.');
-        }
-
     });
 
-</script>
+    copyButton.addEventListener('click', function () {
+        let path = jsonPathElement.value;
+        if (path) {
+            navigator.clipboard.writeText(path);
+            copySuccess.style.display = 'inline';
+            setTimeout(function () {
+                copySuccess.style.display = 'none';
+            }, 1000);
+        }
+    });
 
+    function visualizeJSON(data, parentElement, path = '') {
+        for (let key in data) {
+            let newPath = path + (path ? '.' : '') + key;
+            let div = document.createElement('div');
+            let span = document.createElement('span');
+            span.classList.add('jsonKey');
+            span.setAttribute('data-path', newPath);
+            span.innerText = key + ': ';
+            div.appendChild(span);
+            if (typeof data[key] === 'object') {
+                let pre = document.createElement('pre');
+                pre.classList.add('jsonIndent');
+                visualizeJSON(data[key], pre, newPath);
+                div.appendChild(pre);
+                span.addEventListener('click', function () {
+                    let jsonIndent = this.nextElementSibling;
+                    jsonIndent.classList.toggle('show');
+                });
+            } else {
+                let spanValue = document.createElement('span');
+                spanValue.innerText = data[key];
+                div.appendChild(spanValue);
+            }
+            parentElement.appendChild(div);
+        }
+    }
+
+    jsonDisplayElement.addEventListener('click', function (event) {
+        if (event.target.classList.contains('jsonKey')) {
+            let path = event.target.getAttribute('data-path');
+            jsonPathElement.value = '$.' + path;
+            alert(jsonPathElement.value)
+        }
+    });
+</script>
 </body>
 </html>

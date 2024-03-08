@@ -48,6 +48,15 @@ JSONCleanseETL通过其独特的技艺，在数据的纷繁中寻找并处理信
 <img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/jsonpath_test.png"  alt="Standard - jsonpath_test" width="800">
 </h1>
 
+## JsonPath 生成工具
+
+对于不懂技术得同学，我们也提供了优化得path生成页面，点击节点节点即可生成
+
+启动项目访问`http://localhost:8088/etl/json-path-finder，效果如下
+
+<h1 align="center">
+<img src="https://github.com/yanghaiji/JsonCleanseETL/blob/main/doc/img/json_path_gen.png"  alt="Standard - json_path_gen.png" width="800">
+</h1>
 
 ## 附录 
 
