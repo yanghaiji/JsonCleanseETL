@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.util.CollectionUtils;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.javayh.jsoncleanseetl.config.JsonMappingProperties;
 import com.jayway.jsonpath.PathNotFoundException;
@@ -42,10 +43,30 @@ public class ReflectiveMapper {
         jsonMappings.forEach(jsonMapping -> {
             String jsonPath = jsonMapping.getPath();
             String targetName = jsonMapping.getTargetName();
+            String sourceName = jsonMapping.getSourceName();
+            boolean nullable = jsonMapping.isNullable();
             Optional<Object> fieldValue = readFieldValue(entity, jsonPath);
-            fieldValue.ifPresent(value -> data.put(targetName, value));
+            fieldValue.ifPresent(value -> {
+                try {
+                    if (isNonEmptyValue(value) && !nullable) {
+                        data.put(targetName, value);
+                    } else {
+                        log.warn("Optional get field value is empty for source field '{}' using path '{}'", sourceName,
+                            jsonPath);
+                        // fieldValue 为空，根据规则要求处理，例如将目标字段置为 null 或其他默认值
+                        // todo 或者根据具体业务需求设定其他默认值
+                        data.put(targetName, null);
+                    }
+                } catch (Exception e) {
+                    // 在发生异常时，可以根据具体业务需求处理，例如记录日志、继续执行下一个字段的转换等
+                    log.error("Error parsing value for source field '{}' using path '{}': {}",
+                        sourceName, jsonPath, e.getMessage());
+                }
+            });
             if (!fieldValue.isPresent()) {
-                data.put(targetName, null); // 将 null 值放入结果中
+                log.error("Field value is empty for source field '{}' using path '{}'", sourceName, jsonPath);
+                // todo 或者根据具体业务需求设定其他默认值
+                data.put(targetName, null);
             }
         });
         return data;
@@ -58,8 +79,13 @@ public class ReflectiveMapper {
             return Optional.ofNullable(JceJsonPathReader.read(jsonObject, newJsonPath));
         } catch (Exception e) {
             log.error("JSON path {} is not valid: {}", jsonPath, e.getMessage());
-            throw new PathNotFoundException("JSON path '$.name' is not valid: " + e.getMessage());
+            throw new PathNotFoundException("JSON path [" + jsonPath + "] is not valid: " + e.getMessage());
         }
     }
 
+    public static boolean isNonEmptyValue(Object value) {
+        return !(value instanceof JSONObject && ((JSONObject) value).isEmpty()) &&
+            !(value instanceof JSONArray && ((JSONArray) value).isEmpty()) &&
+            !(value instanceof String && ((String) value).isEmpty());
+    }
 }

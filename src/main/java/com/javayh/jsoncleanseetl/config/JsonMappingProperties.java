@@ -47,5 +47,11 @@ public class JsonMappingProperties {
     @Excel(name = "Operation")
     private String operation;
 
+    /**
+     * 是否可以为空,默认为空
+     */
+    @Excel(name = "Nullable")
+    private boolean nullable = false;
+
 
 }
