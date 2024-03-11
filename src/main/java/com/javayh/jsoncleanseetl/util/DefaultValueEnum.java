@@ -57,14 +57,4 @@ public enum  DefaultValueEnum {
         return Class.forName(value).newInstance();
     }
 
-    public static void main(String[] args) throws Exception {
-        Object o = DefaultValueEnum.MAP.newInstance(DefaultValueEnum.MAP);
-        System.out.println(o);
-        if (o instanceof Map){
-            System.out.println("---");
-        }else {
-            System.out.println("===");
-        }
-    }
-
 }
