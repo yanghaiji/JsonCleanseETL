@@ -1,12 +1,14 @@
 package com.javayh.jsoncleanseetl.mapper.provider;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -101,7 +103,15 @@ public class FastJsonProvider implements JsonProvider {
     @Override
     public Object getMapValue(Object obj, String key) {
         if (obj instanceof JSONObject) {
-            return ((JSONObject) obj).get(key);
+            Object value = ((JSONObject) obj).get(key);
+            // 关键修复：如果值是 Map 但不是 JSONObject，需要包装成 JSONObject
+            if (value instanceof Map && !(value instanceof JSONObject)) {
+                return new JSONObject((Map<String, Object>) value);
+            }
+            if (value instanceof List && !(value instanceof JSONArray)) {
+                return new JSONArray((List) value);
+            }
+            return value;
         }
         return null;
     }

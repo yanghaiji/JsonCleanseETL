@@ -53,7 +53,7 @@ public class JceJsonPathReader {
         这样的配置只能满足大部分场景，需要根据实际需求进行调整
          */
         .options(EnumSet.of(
-            Option.SUPPRESS_EXCEPTIONS,
+            Option.ALWAYS_RETURN_LIST,
             Option.DEFAULT_PATH_LEAF_TO_NULL
         ))
         .mappingProvider(new FastJsonMappingProvider())
